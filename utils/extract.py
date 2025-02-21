@@ -5,13 +5,21 @@ from datetime import datetime
 def scrape_main():
     try:
         url = "https://fashion-studio.dicoding.dev/"
-        response = requests.get(url)
-        response.raise_for_status()
+        try:
+            response = requests.get(url, timeout=10)  # Add timeout
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to fetch data: {str(e)}")
         
+        if not response.text:
+            raise ValueError("Empty response from server")
+            
         soup = BeautifulSoup(response.text, 'html.parser')
         products = []
         
         product_cards = soup.find_all('div', class_='collection-card')
+        if not product_cards:
+            raise ValueError("No product cards found on the page")
         
         for card in product_cards:
             try:

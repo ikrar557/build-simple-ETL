@@ -2,3 +2,7 @@
 .DS_Store
 google-sheets-api.json
 products_*.csv
+.htmlcov
+.coverage
+.pytest_cache
+.env

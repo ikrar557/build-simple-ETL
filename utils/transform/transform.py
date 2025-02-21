@@ -3,7 +3,10 @@ from .converters import convert_price_to_idr, clean_string, parse_colors, parse_
 
 def transform_data(data):
     if not isinstance(data, list):
-        raise TypeError("Input data must be a list")
+        raise TypeError("Input must be a list")
+    
+    if not data:
+        raise ValueError("Empty input data") 
         
     transformed_data = []
     seen_titles = set()

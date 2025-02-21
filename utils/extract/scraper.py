@@ -9,7 +9,7 @@ def scrape_main():
             response = requests.get(url, timeout=10)
             response.raise_for_status()
         except requests.RequestException as e:
-            raise Exception(f"Failed to fetch data: {str(e)}")
+            raise Exception("Failed to fetch data")  # Changed error message for network/HTTP errors
         
         if not response.text:
             raise ValueError("Empty response from server")
@@ -34,7 +34,7 @@ def scrape_main():
                 price = float(price_elem.text.strip().replace('$', ''))
                 
                 rating = 0.0
-                rating_elem = card.find('p', text=lambda t: t and 'Rating:' in t)
+                rating_elem = card.find('p', string=lambda t: t and 'Rating:' in t)
                 if rating_elem:
                     try:
                         rating_text = rating_elem.text.strip()
@@ -43,7 +43,7 @@ def scrape_main():
                         rating = 0.0
                 
                 colors = 0
-                colors_elem = card.find('p', text=lambda t: t and 'Colors' in t)
+                colors_elem = card.find('p', string=lambda t: t and 'Colors' in t)
                 if colors_elem:
                     try:
                         colors_text = colors_elem.text.strip()
@@ -52,12 +52,12 @@ def scrape_main():
                         colors = 0
                 
                 size = ''
-                size_elem = card.find('p', text=lambda t: t and 'Size:' in t)
+                size_elem = card.find('p', string=lambda t: t and 'Size:' in t)
                 if size_elem:
                     size = size_elem.text.split(':')[-1].strip()
                 
                 gender = ''
-                gender_elem = card.find('p', text=lambda t: t and 'Gender:' in t)
+                gender_elem = card.find('p', string=lambda t: t and 'Gender:' in t)
                 if gender_elem:
                     gender = gender_elem.text.split(':')[-1].strip()
                 
@@ -84,5 +84,9 @@ def scrape_main():
             raise Exception("No products found on the page")
             
         return products
+    except requests.RequestException:
+        raise Exception("Failed to fetch data")  # Consistent error message for request exceptions
     except Exception as e:
+        if isinstance(e, requests.RequestException):
+            raise Exception("Failed to fetch data")
         raise Exception(f"Error during extraction: {str(e)}")

@@ -13,22 +13,22 @@ def transform_data(data):
     invalid_count = 0
     
     for index, item in enumerate(data):
-        if not validate_item_structure(item):
-            print(f"Skipping item {index}: Not a dictionary")
-            invalid_count += 1
-            continue
-            
-        title = item.get('Title')
-        if not validate_title(title):
-            print(f"Skipping invalid title at index {index}: {title}")
-            invalid_count += 1
-            continue
-            
-        if title in seen_titles:
-            print(f"Skipping duplicate title: {title}")
-            continue
-            
         try:
+            if not validate_item_structure(item):
+                print(f"Skipping item {index}: Not a dictionary")
+                invalid_count += 1
+                continue
+                
+            title = item.get('Title', '')
+            if not validate_title(title):
+                print(f"Skipping invalid title at index {index}: {title}")
+                invalid_count += 1
+                continue
+                
+            if title in seen_titles:
+                print(f"Skipping duplicate title: {title}")
+                continue
+                
             transformed_item = {
                 'Title': clean_string(title),
                 'Price': convert_price_to_idr(item.get('Price', 0)),
@@ -42,8 +42,17 @@ def transform_data(data):
             if validate_transformed_item(transformed_item):
                 seen_titles.add(transformed_item['Title'])
                 transformed_data.append(transformed_item)
-                
+            else:
+                print(f"Skipping item {index}: Failed validation after transformation")
+                invalid_count += 1
+                    
         except (ValueError, TypeError) as e:
+            print(f"Error processing item {index}: {str(e)}")
+            invalid_count += 1
+            continue
+        except Exception as e:
+            print(f"Unexpected error processing item {index}: {str(e)}")
+            invalid_count += 1
             continue
             
     if invalid_count > 0:

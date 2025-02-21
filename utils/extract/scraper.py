@@ -9,7 +9,7 @@ def scrape_main():
             response = requests.get(url, timeout=10)
             response.raise_for_status()
         except requests.RequestException as e:
-            raise Exception("Failed to fetch data")  # Changed error message for network/HTTP errors
+            raise Exception("Failed to fetch data")
         
         if not response.text:
             raise ValueError("Empty response from server")
@@ -85,7 +85,7 @@ def scrape_main():
             
         return products
     except requests.RequestException:
-        raise Exception("Failed to fetch data")  # Consistent error message for request exceptions
+        raise Exception("Failed to fetch data")
     except Exception as e:
         if isinstance(e, requests.RequestException):
             raise Exception("Failed to fetch data")

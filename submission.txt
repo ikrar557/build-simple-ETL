@@ -1,0 +1,14 @@
+# Menjalankan project
+python3 main.py
+
+# Menjalankan unit test pada folder tests tanpa menampilkan coverage
+python3 -m pytest tests
+
+# Menjalankan unit test dengan langsung menampilkan coverage pada terminal dan HTML
+python3 -m pytest --cov=utils --cov-report=term-missing --cov-report=html
+
+# Menjalankan test coverage pada folder tests
+coverage run -m pytest tests
+
+# Url Google Sheets:
+https://docs.google.com/spreadsheets/d/1oe1pTN0O4qUwPstWVUyStOyRzGgmbF4aRdOVtxfrkXA/edit?usp=sharing

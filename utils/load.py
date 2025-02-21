@@ -5,6 +5,10 @@ import psycopg2
 from sqlalchemy import create_engine, Column, String, Float, Integer, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def save_to_csv(data, filename='products.csv'):
     try:
@@ -95,12 +99,13 @@ def save_to_postgresql(data, connection_params):
         if not isinstance(data, list) or not data:
             raise ValueError("Invalid or empty data")
             
+        # Get credentials from environment variables
         default_params = {
-            'host': 'localhost',
-            'database': 'products',
-            'user': 'postgres',
-            'password': 'postgres',
-            'port': '5432'
+            'host': os.getenv('DB_HOST'),
+            'database': os.getenv('DB_NAME'),
+            'user': os.getenv('DB_USER'),
+            'password': os.getenv('DB_PASSWORD'),
+            'port': os.getenv('DB_PORT')
         }
         
         db_url = f"postgresql://{default_params['user']}:{default_params['password']}@{default_params['host']}:{default_params['port']}/{default_params['database']}"

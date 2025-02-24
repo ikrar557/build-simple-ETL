@@ -76,7 +76,7 @@ def test_scrape_main_malformed_data():
         
         with pytest.raises(Exception) as exc_info:
             scrape_main()
-        assert "Error during extraction: No products found on the page" in str(exc_info.value)
+        assert "Error during extraction: No products found across all pages" in str(exc_info.value)
 
 def test_scrape_main_empty_response():
     with patch('requests.get') as mock_get:
@@ -174,29 +174,6 @@ def test_scrape_main_partial_data():
         assert result[0]['Rating'] == 0.0
         assert result[0]['Colors'] == 0
 
-def test_scrape_main_malformed_data():
-    mock_html = '''
-    <div class="collection-card">
-        <h3 class="product-title">Test Product</h3>
-        <span class="price">$invalid</span>
-        <p>Rating: invalid/5</p>
-        <p>Colors: invalid</p>
-        <p>Size: M</p>
-        <p>Gender: Unisex</p>
-    </div>
-    '''
-    
-    with patch('requests.get') as mock_get:
-        mock_get.return_value = MagicMock(
-            text=mock_html,
-            status_code=200,
-            raise_for_status=MagicMock()
-        )
-        
-        with pytest.raises(Exception) as exc_info:
-            scrape_main()
-        assert "Error during extraction: No products found on the page" in str(exc_info.value)
-
 def test_scrape_main_missing_elements():
     mock_html = '''
     <div class="collection-card">
@@ -218,4 +195,4 @@ def test_scrape_main_missing_elements():
         
         with pytest.raises(Exception) as exc_info:
             scrape_main()
-        assert "Error during extraction: No products found on the page" in str(exc_info.value)
+        assert "Error during extraction: No products found across all pages" in str(exc_info.value)
